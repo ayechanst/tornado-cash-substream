@@ -1,5 +1,5 @@
 use crate::{
-    pb::schema::{Approvals, Transfers},
+    // pb::schema::{Approvals, Transfers},
     ADDRESS,
 };
 use substreams::Hex;
@@ -26,20 +26,6 @@ pub fn transfers_to_table_changes(tables: &mut Tables, transfers: &Transfers) {
     }
 }
 
-pub fn approvals_to_table_changes(tables: &mut Tables, approvals: &Approvals) {
-    for approval in approvals.approvals.iter() {
-        // handle the approval
-        let key = format!("{}-{}", &approval.tx_hash, approval.token_id);
-        let row = tables.update_row("Approval", key);
-        row.set("owner", &approval.owner);
-        row.set("approved", &approval.approved);
-        row.set("tokenId", &approval.token_id);
-
-        // handle creation of accounts
-        tables.create_row("Account", &approval.owner);
-        tables.create_row("Account", &approval.approved);
-    }
-}
 
 pub fn format_hex(address: &[u8]) -> String {
     format!("0x{}", Hex(address).to_string())

@@ -4,10 +4,10 @@ mod erc721;
 mod helpers;
 mod pb;
 
-use pb::schema::{Approval, Approvals, Transfer, Transfers};
+// use pb::schema::{Approval, Approvals, Transfer, Transfers};
 use substreams::pb::substreams::Clock;
 use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
-use substreams_ethereum::{pb::eth, Event};
+// use substreams_ethereum::{pb::eth, Event};
 
 use helpers::*;
 
@@ -43,36 +43,9 @@ fn map_transfers(block: eth::v2::Block) -> Result<Transfers, substreams::errors:
 }
 
 #[substreams::handlers::map]
-fn map_approvals(block: eth::v2::Block) -> Result<Approvals, substreams::errors::Error> {
-    let approvals = block
-        .logs()
-        .filter_map(|log| {
-            if format_hex(log.address()) == ADDRESS.to_lowercase() {
-                if let Some(approval) = ApprovalEvent::match_and_decode(log) {
-                    Some((approval, format_hex(&log.receipt.transaction.hash)))
-                } else {
-                    None
-                }
-            } else {
-                None
-            }
-        })
-        .map(|(approval, hash)| Approval {
-            owner: format_hex(&approval.owner),
-            approved: format_hex(&approval.approved),
-            token_id: approval.token_id.to_string(),
-            tx_hash: hash,
-        })
-        .collect::<Vec<Approval>>();
-
-    Ok(Approvals { approvals })
-}
-
-#[substreams::handlers::map]
 pub fn graph_out(
     clock: Clock,
-    transfers: Transfers,
-    approvals: Approvals,
+    // transfers: Transfers,
 ) -> Result<EntityChanges, substreams::errors::Error> {
     let mut tables = Tables::new();
 
@@ -82,8 +55,6 @@ pub fn graph_out(
     }
 
     transfers_to_table_changes(&mut tables, &transfers);
-
-    approvals_to_table_changes(&mut tables, &approvals);
 
     Ok(tables.to_entity_changes())
 }
