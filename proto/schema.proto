@@ -21,14 +21,3 @@ message Transfer {
   string token_id = 3;
   string tx_hash = 4;
 }
-
-message Approval {
-  string owner = 1;
-  string approved = 2;
-  string token_id = 3;
-  string tx_hash = 4;
-}
-
-message Approvals {
-  repeated Approval approvals = 1;
-}

@@ -11,9 +11,9 @@ use substreams_ethereum::{pb::eth, Event};
 
 use helpers::*;
 
-use erc721::events::{Approval as ApprovalEvent, Transfer as TransferEvent};
+// use erc721::events::{Approval as ApprovalEvent, Transfer as TransferEvent};
 
-pub const ADDRESS: &str = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
+pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
 const START_BLOCK: u64 = 12287507;
 
 #[substreams::handlers::map]
