@@ -21,3 +21,25 @@ message Transfer {
   string token_id = 3;
   string tx_hash = 4;
 }
+
+message Deposits {
+  repeated Deposits deposists = 1;
+}
+
+message Deposit {
+  string from = 1;
+  string to = 2;
+  string tx_hash = 3;
+  string tx_value = 4;
+}
+
+message Withdraws {
+  repeated Withdraws withdraws = 1;
+}
+
+message Withdraw {
+  string from = 1;
+  string to = 2;
+  string tx_hash = 3;
+  string tx_value = 4;
+}

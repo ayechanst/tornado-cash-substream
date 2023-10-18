@@ -1,4 +1,4 @@
-#[path = "./abi/erc721.rs"]
+#[path = "./abi/TornadoRouter.rs"]
 mod erc721;
 
 mod helpers;
