@@ -1,6 +1,5 @@
 #[path = "./abi/TornadoRouter.rs"]
 mod erc721;
-
 mod helpers;
 mod pb;
 
@@ -11,7 +10,7 @@ use substreams_ethereum::{pb::eth, Event};
 
 use helpers::*;
 
-use erc721::events::{Approval as ApprovalEvent, Transfer as TransferEvent};
+use erc721::events::{Transfer as TransferEvent, Deposit as DepositEvent};
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
 const START_BLOCK: u64 = 12287507;
@@ -23,7 +22,7 @@ fn map_transfers(block: eth::v2::Block) -> Result<Transfers, substreams::errors:
         .filter_map(|log| {
             if format_hex(log.address()) == ADDRESS.to_lowercase() {
                 if let Some(transfer) = TransferEvent::match_and_decode(log) {
-                    Some((transfer, format_hex(&log.receipt.transaction.value)))
+                    Some((transfer, format_hex(&log.receipt.transaction.hash)))
                 } else {
                     None
                 }
@@ -42,13 +41,13 @@ fn map_transfers(block: eth::v2::Block) -> Result<Transfers, substreams::errors:
     Ok(Transfers { transfers })
 }
 #[substreams::handlers::map]
-fn map_deposits(block: eth::v2::Block) -> Result<Desposits, substreams::errors::Error> {
-    let transfers = block
+fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::Error> {
+    let deposits = block
         .logs()
         .filter_map(|log| {
             if format_hex(log.address()) == ADDRESS.to_lowercase() {
-                if let Some(transfer) = TransferEvent::match_and_decode(log) {
-                    Some((transfer, format_hex(&log.receipt.transaction.value)))
+                if let Some(deposits) = TransferEvent::match_and_decode(log) {
+                    Some((deposits, format_hex(&log.receipt.transaction.hash)))
                 } else {
                     None
                 }
@@ -56,15 +55,15 @@ fn map_deposits(block: eth::v2::Block) -> Result<Desposits, substreams::errors::
                 None
             }
         })
-        .map(|(transfer, hash)| Transfer {
+        .map(|(deposit, hash)| Deposits {
             from: format_hex(&transfer.from),
             to: format_hex(&transfer.to),
-            token_id: transfer.token_id.to_string(),
             tx_hash: hash,
+            tx_value: deposit
         })
-        .collect::<Vec<Transfer>>();
+        .collect::<Vec<Deposits>>();
 
-    Ok(Transfers { transfers })
+    Ok(Deposits { deposits })
 }
 
 
