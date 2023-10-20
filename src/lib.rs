@@ -10,6 +10,7 @@ use substreams_ethereum::{pb::eth, Event};
 
 use helpers::*;
 
+use substreams::scalar::{BigDecimal, BigInt};
 use erc721::events::{Transfer as TransferEvent, Deposit as DepositEvent};
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
@@ -48,11 +49,8 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         .filter_map(|tx| {
             if format_hex(&tx.call.address) == ADDRESS.to_lowercase() {
                 if let Some(value) = tx.call.value {
-                    if (tx.call.value) > 0 {
-                        // do something
-                    } else {
-                        None
-                    }
+                    // adjust this to fit the case
+                    BigInt::from_signed_bytes_be(&storage_change.old_value);
                 } else {
                     None
                 }
