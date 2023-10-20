@@ -40,12 +40,13 @@ fn map_transfers(block: eth::v2::Block) -> Result<Transfers, substreams::errors:
 
     Ok(Transfers { transfers })
 }
+
 #[substreams::handlers::map]
 fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::Error> {
     let deposits = block
-        .logs()
-        .filter_map(|log| {
-            if format_hex(log.address()) == ADDRESS.to_lowercase() {
+        .calls()
+        .filter_map(|tx| {
+            if format_hex(tx.call.address()) == ADDRESS.to_lowercase() {
                 if let Some(deposits) = TransferEvent::match_and_decode(log) {
                     Some((deposits, format_hex(&log.receipt.transaction.hash)))
                 } else {
