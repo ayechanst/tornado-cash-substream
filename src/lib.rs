@@ -4,7 +4,7 @@ mod helpers;
 mod pb;
 
 use pb::schema::{Transfer, Transfers, Deposit, Deposits, Withdraw, Withdraws};
-use substreams::pb::substreams::Clock;
+use substreams::{pb::substreams::Clock, scalar::BigInt};
 use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
 use substreams_ethereum::{pb::eth, Event};
 
@@ -46,9 +46,13 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
     let deposits = block
         .calls()
         .filter_map(|tx| {
-            if format_hex(tx.call.address()) == ADDRESS.to_lowercase() {
-                if let Some(deposits) = TransferEvent::match_and_decode(log) {
-                    Some((deposits, format_hex(&log.receipt.transaction.hash)))
+            if format_hex(&tx.call.address) == ADDRESS.to_lowercase() {
+                if let Some(value) = tx.call.value {
+                    if (tx.call.value) > 0 {
+                        // do something
+                    } else {
+                        None
+                    }
                 } else {
                     None
                 }
@@ -60,13 +64,12 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
             from: format_hex(&transfer.from),
             to: format_hex(&transfer.to),
             tx_hash: hash,
-            tx_value: deposit
+            tx_value: deposit,
         })
         .collect::<Vec<Deposits>>();
 
     Ok(Deposits { deposits })
 }
-
 
 #[substreams::handlers::map]
 pub fn graph_out(
