@@ -3,6 +3,7 @@ mod erc721;
 mod helpers;
 mod pb;
 
+use substreams::scalar::BigInt;
 use pb::schema::{Deposit, Deposits};
 // use substreams::{pb::substreams::Clock, scalar::BigInt};
 // use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
@@ -14,7 +15,7 @@ use helpers::*;
 // use erc721::events::Transfer as TransferEvent;
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
-const START_BLOCK: u64 = 12287507;
+// const START_BLOCK: u64 = 12287507;
 
 // #[substreams::handlers::map]
 // fn map_transfers(block: eth::v2::Block) -> Result<Transfers, substreams::errors::Error> {
@@ -48,15 +49,16 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         .calls()
         .filter_map(|callview| {
             if format_hex(&callview.call.address) == ADDRESS.to_lowercase() {
-                if let Some(value) = callview.call.value {
-                    println!("value: {:?}", &value);
+                if let Some(value) = &callview.call.value {
+
+                    substreams::log::info!("value: {:?}", BigInt::from_unsigned_bytes_be(&value.bytes));
                     println!("hash: {}", format_hex(&callview.transaction.hash));
 
                     Some(Deposit {
                         from: format_hex(&callview.transaction.from),
                         to: format_hex(&callview.transaction.to),
                         tx_hash: format_hex(&callview.transaction.hash),
-                        tx_value: "big int".to_string(),
+                        tx_value: "whatever".to_string(),
                     })
                 } else {
                     None
@@ -67,15 +69,6 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         })
             .collect::<Vec<Deposit>>();
             Ok(Deposits { deposits })
-        // .map(|(deposit, hash)| Deposits {
-        //     from: format_hex(&transfer.from),
-        //     to: format_hex(&transfer.to),
-        //     tx_hash: hash,
-        //     tx_value: deposit,
-        // })
-        // .collect::<Vec<Deposits>>();
-
-    // Ok(Deposits { deposits })
 }
 
 
