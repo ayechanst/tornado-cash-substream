@@ -1,5 +1,6 @@
 use crate::{
     // pb::schema::{Approvals, Transfers},
+    pb::schema::Transfers,
     ADDRESS,
 };
 use substreams::Hex;
