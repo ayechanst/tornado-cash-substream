@@ -35,7 +35,7 @@ pub struct Transfer {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Deposits {
     #[prost(message, repeated, tag="1")]
-    pub deposists: ::prost::alloc::vec::Vec<Deposits>,
+    pub deposits: ::prost::alloc::vec::Vec<Deposit>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -53,7 +53,7 @@ pub struct Deposit {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Withdraws {
     #[prost(message, repeated, tag="1")]
-    pub withdraws: ::prost::alloc::vec::Vec<Withdraws>,
+    pub withdraws: ::prost::alloc::vec::Vec<Withdraw>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
