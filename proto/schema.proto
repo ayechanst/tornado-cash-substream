@@ -11,17 +11,6 @@ message Contract {
     string timestamp = 2;
 }
 
-message Transfers {
-  repeated Transfer transfers = 1;
-}
-
-message Transfer {
-  string from = 1;
-  string to = 2;
-  string token_id = 3;
-  string tx_hash = 4;
-}
-
 message Deposits {
   repeated Deposit deposits = 1;
 }
@@ -30,7 +19,7 @@ message Deposit {
   string from = 1;
   string to = 2;
   string tx_hash = 3;
-  string tx_value = 4;
+  uint64 tx_value = 4;
 }
 
 message Withdraws {
@@ -41,5 +30,5 @@ message Withdraw {
   string from = 1;
   string to = 2;
   string tx_hash = 3;
-  string tx_value = 4;
+  uint64 tx_value = 4;
 }

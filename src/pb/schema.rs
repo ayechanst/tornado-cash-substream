@@ -15,24 +15,6 @@ pub struct Contract {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Transfers {
-    #[prost(message, repeated, tag="1")]
-    pub transfers: ::prost::alloc::vec::Vec<Transfer>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Transfer {
-    #[prost(string, tag="1")]
-    pub from: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub to: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub token_id: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub tx_hash: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Deposits {
     #[prost(message, repeated, tag="1")]
     pub deposits: ::prost::alloc::vec::Vec<Deposit>,
@@ -46,8 +28,8 @@ pub struct Deposit {
     pub to: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
     pub tx_hash: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub tx_value: ::prost::alloc::string::String,
+    #[prost(uint64, tag="4")]
+    pub tx_value: u64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -64,7 +46,7 @@ pub struct Withdraw {
     pub to: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
     pub tx_hash: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub tx_value: ::prost::alloc::string::String,
+    #[prost(uint64, tag="4")]
+    pub tx_value: u64,
 }
 // @@protoc_insertion_point(module)

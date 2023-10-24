@@ -6,6 +6,8 @@ mod pb;
 use substreams::scalar::BigInt;
 use pb::schema::{Deposit, Deposits};
 use substreams::key;
+use substreams::store::DeltaBigInt;
+
 // use pb::schema::{Deposit, Deposits, Withdraw, Withdraws};
 // use substreams::{pb::substreams::Clock, scalar::BigInt};
 // use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
@@ -49,7 +51,7 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
 }
 
 #[substreams::handlers::store]
-fn store_deposits()
+fn store_deposits(deposits: erc721::Deposits, store: )
 
 // #[substreams::handlers::map]
 // fn map_withdraws(block: eth::v2::Block) -> Result<Withdraws, substreams::errors::Error> {
