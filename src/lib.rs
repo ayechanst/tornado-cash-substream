@@ -5,8 +5,8 @@ mod pb;
 
 use substreams::scalar::BigInt;
 use pb::schema::{Deposit, Deposits};
-use substreams::key;
-use substreams::store::DeltaBigInt;
+// use substreams::key;
+// use substreams::store::{DeltaBigInt, StoreAddBigInt};
 
 // use pb::schema::{Deposit, Deposits, Withdraw, Withdraws};
 // use substreams::{pb::substreams::Clock, scalar::BigInt};
@@ -37,7 +37,7 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
                         from: format_hex(&callview.transaction.from),
                         to: format_hex(&callview.transaction.to),
                         tx_hash: format_hex(&callview.transaction.hash),
-                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_string(),
+                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_u64(),
                     })
                 } else {
                     None
@@ -50,8 +50,10 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         Ok(Deposits { deposits })
 }
 
-#[substreams::handlers::store]
-fn store_deposits(deposits: erc721::Deposits, store: )
+// #[substreams::handlers::store]
+// fn store_deposits(deposits: Deposits, store: StoreAddBigInt<Deposit>) {
+
+// }
 
 // #[substreams::handlers::map]
 // fn map_withdraws(block: eth::v2::Block) -> Result<Withdraws, substreams::errors::Error> {

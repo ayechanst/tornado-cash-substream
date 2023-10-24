@@ -25,7 +25,7 @@ modules:
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
-      type: proto:schema.Transfers
+      type: proto:schema.Deposits
 
   - name: store_deposits
     kind: store
