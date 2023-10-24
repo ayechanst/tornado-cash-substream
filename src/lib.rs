@@ -5,6 +5,7 @@ mod pb;
 
 use substreams::scalar::BigInt;
 use pb::schema::{Deposit, Deposits};
+use substreams::key;
 // use pb::schema::{Deposit, Deposits, Withdraw, Withdraws};
 // use substreams::{pb::substreams::Clock, scalar::BigInt};
 // use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};

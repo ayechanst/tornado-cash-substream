@@ -19,7 +19,7 @@ binaries:
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
-  - name: map_transfers
+  - name: map_deposits
     kind: map
     initialBlock: 12287507
     inputs:
@@ -27,13 +27,12 @@ modules:
     output:
       type: proto:schema.Transfers
 
-  - name: map_deposits
-    kind: map
-    initialBlock: 12287507
+  - name: store_deposits
+    kind: store
+    updatePolicy: set
+    valueType: string
     inputs:
-      - source: sf.ethereum.type.v2.Block
-    output:
-      type: proto:schema.Deposits
+      - map: map_deposits
 
   - name: graph_out
     kind: map
