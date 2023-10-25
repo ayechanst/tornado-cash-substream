@@ -3,6 +3,8 @@ package:
   name: "erc721_substream"
   version: v1.0.1
 
+network: mainnet
+
 imports:
   entity: https://github.com/streamingfast/substreams-entity-change/releases/download/v0.2.1/substreams-entity-change-v0.2.1.spkg
 
