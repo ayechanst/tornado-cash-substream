@@ -3,15 +3,15 @@ mod erc721;
 mod helpers;
 mod pb;
 
-use substreams::scalar::BigInt;
+use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
 use pb::schema::{Deposit, Deposits};
 // use substreams::key;
-// use substreams::store::{DeltaBigInt, StoreAddBigInt};
 
 // use pb::schema::{Deposit, Deposits, Withdraw, Withdraws};
 // use substreams::{pb::substreams::Clock, scalar::BigInt};
 // use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
 use substreams_ethereum::pb::eth;
+use substreams::store::StoreNew;
 
 use helpers::*;
 
@@ -50,10 +50,12 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         Ok(Deposits { deposits })
 }
 
-// #[substreams::handlers::store]
-// fn store_deposits(deposits: Deposits, store: StoreAddBigInt<Deposit>) {
-
-// }
+#[substreams::handlers::store]
+fn store_deposits(deposits: Deposits, store: StoreAddInt64) {
+    for deposit in deposits.deposits {
+        store.add(deposit.tx_value, deposit.from, 1);
+    }
+}
 
 // #[substreams::handlers::map]
 // fn map_withdraws(block: eth::v2::Block) -> Result<Withdraws, substreams::errors::Error> {

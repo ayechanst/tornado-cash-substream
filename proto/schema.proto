@@ -19,7 +19,7 @@ message Deposit {
   string from = 1;
   string to = 2;
   string tx_hash = 3;
-  uint64 tx_value = 4;
+  int64 tx_value = 4;
 }
 
 message Withdraws {
@@ -30,5 +30,5 @@ message Withdraw {
   string from = 1;
   string to = 2;
   string tx_hash = 3;
-  uint64 tx_value = 4;
+  int64 tx_value = 4;
 }
