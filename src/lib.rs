@@ -8,17 +8,17 @@ mod pb;
 // use pb::schema::{Deposit, Deposits, Withdraw, Withdraws};
 
 use pb::schema::{Deposit, Deposits};
-// use substreams::pb::substreams::Clock;
-// use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
-// use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
+use substreams::pb::substreams::Clock;
+use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
+use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
 use substreams_ethereum::pb::eth;
 // use substreams::store::StoreNew;
-
-use substreams::scalar::BigInt;
-
 use helpers::*;
 
-// use erc721::events::Transfer as TransferEvent;
+// database related things
+use substreams_database_change::pb::database::DatabaseChanges;
+use substreams_database_change::tables::Tables;
+
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
 // const START_BLOCK: u64 = 12287507;
@@ -52,31 +52,24 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         Ok(Deposits { deposits })
 }
 
-// #[substreams::handlers::store]
-// fn store_deposits(deposits: Deposits, output: StoreAddInt64) {
-//     for deposit in deposits.deposits {
-//         output.add(0, "total", deposit.tx_value as i64);
-//     }
-// }
+#[substreams::handlers::store]
+fn store_deposits(deposits: Deposits, output: StoreAddInt64) {
+    for deposit in deposits.deposits {
+        output.add(0, "total", deposit.tx_value as i64);
+    }
+}
 
-// #[substreams::handlers::map]
-// fn map_total_deposits(total_deposits: StoreAddInt64) -> Result<Deposits, substreams::errors::Error> {
-//     let keys = ["from", "to", "tx_hash", "tx_value"];
-//     let mut deposits = Vec::new();
+#[substreams::handlers::map]
+pub fn graph_out(
+    clock: Clock,
+    deposits: Deposits
+) -> Result<DatabaseChanges, substreams::errors::Error> {
+    let mut tables = Tables::new();
+    if clock.number == START_BLOCK {
+        // Create the collection, we only need to do this once
+        tables.create_row("Collection", ADDRESS.to_string());
+    }
+    transfers_to_table_changes(&mut tables, &transfers);
 
-// }
-
-// #[substreams::handlers::map]
-// pub fn graph_out(
-//     clock: Clock,
-//     deposits: Deposits
-// ) -> Result<EntityChanges, substreams::errors::Error> {
-//     let mut tables = Tables::new();
-//     if clock.number == START_BLOCK {
-//         // Create the collection, we only need to do this once
-//         tables.create_row("Collection", ADDRESS.to_string());
-//     }
-//     transfers_to_table_changes(&mut tables, &transfers);
-
-//     Ok(tables.to_entity_changes())
-// }
+    Ok(tables.to_entity_changes())
+}
