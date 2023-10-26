@@ -10,9 +10,8 @@ mod pb;
 use pb::schema::{Deposit, Deposits};
 use substreams::pb::substreams::Clock;
 use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
-use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
 use substreams_ethereum::pb::eth;
-// use substreams::store::StoreNew;
+use substreams::store::StoreNew;
 use helpers::*;
 
 // database related things
@@ -21,7 +20,7 @@ use substreams_database_change::tables::Tables;
 
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
-// const START_BLOCK: u64 = 12287507;
+const START_BLOCK: u64 = 18410666;
 //
 // let tc01 = "0x12D66f87A04A9E220743712cE6d9bB1B5616B8Fc";
 // let tc1 = "0x47CE0C6eD5B0Ce3d3A51fdb1C52DC66a7c3c2936";
@@ -60,16 +59,22 @@ fn store_deposits(deposits: Deposits, output: StoreAddInt64) {
 }
 
 #[substreams::handlers::map]
-pub fn graph_out(
+pub fn db_out(
     clock: Clock,
     deposits: Deposits
 ) -> Result<DatabaseChanges, substreams::errors::Error> {
     let mut tables = Tables::new();
     if clock.number == START_BLOCK {
+        for deposit in deposits.deposits {
+            tables.create_row("Collection", ADDRESS)
+                .set("from", deposit.from)
+                .set("to", deposit.to)
+                .set("tx_hash", deposit.tx_hash)
+                .set("tx_value", deposit.tx_value);
+        }
         // Create the collection, we only need to do this once
-        tables.create_row("Collection", ADDRESS.to_string());
     }
-    transfers_to_table_changes(&mut tables, &transfers);
+    // transfers_to_database_changes(&mut tables, &transfers);
 
-    Ok(tables.to_entity_changes())
+    Ok(tables.to_database_changes())
 }
