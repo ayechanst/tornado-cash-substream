@@ -11,7 +11,7 @@ use pb::schema::{Deposit, Deposits};
 use substreams::pb::substreams::Clock;
 use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
 use substreams_ethereum::pb::eth;
-use substreams::store::{StoreNew, StoreGetInt64};
+use substreams::store::{StoreNew, StoreGetInt64, StoreGet};
 use helpers::*;
 
 // database related things
@@ -67,7 +67,7 @@ pub fn db_out(
     let mut tables = Tables::new();
     if clock.number == START_BLOCK {
         for deposit in deposits.deposits {
-            tables.create_row("Collection", ADDRESS)
+            tables.create_row("deposits", ADDRESS)
                 .set("from", deposit.from)
                 .set("to", deposit.to)
                 .set("tx_hash", deposit.tx_hash)
@@ -76,7 +76,7 @@ pub fn db_out(
         // Create the collection, we only need to do this once
     }
 
-    for all_deposits in all_deposits.all_deposits {
+    for all_deposits in all_deposits.get_at(ord, key) {
         tables.create_row("All Deposists", ADDRESS)
             .set("all_deposits", all_deposits);
     }
