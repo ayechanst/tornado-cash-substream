@@ -7,8 +7,8 @@ create table if not exists deposits
     tx_value int not null,
 );
 
-create table total_deposits
-(
-    id         text not null constraint total_deposits_pk primary key,
-    total     int,
-);
+-- create table total_deposits
+-- (
+--     id         text not null constraint total_deposits_pk primary key,
+--     total     int,
+-- );

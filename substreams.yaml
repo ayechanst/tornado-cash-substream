@@ -1,12 +1,14 @@
 specVersion: v0.1.0
 package:
-  name: "erc721_substream"
+  name: "tornado_cash"
   version: v1.0.1
 
 network: mainnet
 
 imports:
   entity: https://github.com/streamingfast/substreams-entity-change/releases/download/v0.2.1/substreams-entity-change-v0.2.1.spkg
+  database_change: https://github.com/streamingfast/substreams-sink-database-changes/releases/download/v1.2.1/substreams-database-change-v1.2.1.spkg
+
 
 protobuf:
   files:
@@ -40,6 +42,18 @@ modules:
     inputs:
       - source: sf.substreams.v1.Clock
       - map: map_deposits
-      - store: store_deposits
+      # - store: store_deposits
     output:
-      type: proto:substreams.entity.v1.EntityChanges
+      type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
+    schema: "./schema.sql"
+    wire_protocol_access: true
+    engine: postgres
+    postgraphile_frontend:
+      enabled: true
+    pgweb_frontend:
+      enabled: true
