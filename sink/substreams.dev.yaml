@@ -15,8 +15,3 @@ sink:
   config:
     schema: "../schema.sql"
     wire_protocol_access: true
-    engine: postgres
-    postgraphile_frontend:
-      enabled: true
-    pgweb_frontend:
-      enabled: true

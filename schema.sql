@@ -1,14 +1,7 @@
-create table if not exists deposits
-(
-    id          text not null constraint deposits_pk primary key,
-    from          text not null,
-    to      text not null,
-    tx_hash        text not null,
-    tx_value int not null,
+CREATE TABLE IF NOT EXISTS deposits (
+    id TEXT NOT NULL CONSTRAINT deposits_pk PRIMARY KEY,
+    from_address TEXT NOT NULL,
+    to_address TEXT NOT NULL,
+    tx_hash TEXT NOT NULL,
+    tx_value INT NOT NULL
 );
-
--- create table total_deposits
--- (
---     id         text not null constraint total_deposits_pk primary key,
---     total     int,
--- );
