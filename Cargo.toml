@@ -1,5 +1,5 @@
 [package]
-name = "tornado_cash"
+name = "erc721-substream"
 version = "1.0.0"
 edition = "2021"
 
