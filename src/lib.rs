@@ -36,7 +36,7 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
                         from: format_hex(&callview.transaction.from),
                         to: format_hex(&callview.transaction.to),
                         tx_hash: format_hex(&callview.transaction.hash),
-                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_u64(),
+                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_string(),
                     })
                 } else {
                     None
