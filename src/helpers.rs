@@ -3,7 +3,8 @@
 //     pb::schema::Transfers,
 //     ADDRESS,
 // };
-use substreams::Hex;
+//
+use substreams::{Hex, scalar::BigInt};
 // use substreams_entity_change::tables::Tables;
 
 // pub fn transfers_to_table_changes(tables: &mut Tables, transfers: &Transfers) {
@@ -30,4 +31,8 @@ use substreams::Hex;
 
 pub fn format_hex(address: &[u8]) -> String {
     format!("0x{}", Hex(address).to_string())
+}
+
+pub fn wei_to_eth(wei: BigInt) -> f32 {
+    ((wei.to_u64()) / 1000000000000000000) as f32
 }

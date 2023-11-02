@@ -32,11 +32,12 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         .filter_map(|callview| {
             if format_hex(&callview.call.address) == ADDRESS.to_lowercase() {
                 if let Some(value) = &callview.call.value {
+                    let value = wei_to_eth(BigInt::from_unsigned_bytes_be(&value.bytes));
                     Some(Deposit {
                         from: format_hex(&callview.transaction.from),
                         to: format_hex(&callview.transaction.to),
                         tx_hash: format_hex(&callview.transaction.hash),
-                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_string(),
+                        tx_value: value,
                     })
                 } else {
                     None
@@ -52,7 +53,7 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
 // #[substreams::handlers::store]
 // fn store_deposits(deposits: Deposits, store: StoreAddInt64) {
 //     for deposit in deposits.deposits {
-//         store.add(0, "total", deposit.tx_value as i64);
+//         store.add(0, "total", deposit.tx_value as float);
 //     }
 // }
 
@@ -70,6 +71,7 @@ pub fn db_out(
                 .set("tx_hash", deposit.tx_hash)
                 .set("tx_value", deposit.tx_value);
         }
+
     // for all_deposits in all_deposits.into() {
     //     tables.create_row("All Deposists", ADDRESS)
     //         .set("all_deposits", all_deposits);
