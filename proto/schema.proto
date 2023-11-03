@@ -19,5 +19,5 @@ message Deposit {
   string from = 1;
   string to = 2;
   string tx_hash = 3;
-  float tx_value = 4;
+  string tx_value = 4;
 }
