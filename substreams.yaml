@@ -31,13 +31,13 @@ modules:
     output:
       type: proto:schema.Deposits
 
-  # - name: store_deposits
-  #   kind: store
-  #   initialBlock: 14287507
-  #   updatePolicy: add
-  #   valueType: bigint
-  #   inputs:
-  #     - map: map_deposits
+  - name: store_deposits
+    kind: store
+    initialBlock: 14287507
+    updatePolicy: add
+    valueType: bigint
+    inputs:
+      - map: map_deposits
 
   - name: db_out
     kind: map

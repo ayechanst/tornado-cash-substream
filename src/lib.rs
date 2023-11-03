@@ -4,19 +4,19 @@ mod helpers;
 mod pb;
 
 // use substreams::key;
-use substreams::scalar::BigInt;
+use substreams::{scalar::BigInt, store::StoreAddBigInt};
 use pb::schema::{Deposit, Deposits};
-// use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
 use substreams_ethereum::pb::eth;
 // use substreams::store::{StoreNew, StoreGetInt64, StoreGet};
 use helpers::*;
+
+// store related things
+// use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
 
 // database related things
 use substreams_database_change::pb::database::DatabaseChanges;
 // use substreams_database_change::tables::Tables;
 
-// temporary
-// use substreams::store::StoreNew;
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
 
@@ -32,12 +32,11 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         .filter_map(|callview| {
             if format_hex(&callview.call.address) == ADDRESS.to_lowercase() {
                 if let Some(value) = &callview.call.value {
-                    let value = wei_to_eth(BigInt::from_unsigned_bytes_be(&value.bytes));
                     Some(Deposit {
                         from: format_hex(&callview.transaction.from),
                         to: format_hex(&callview.transaction.to),
                         tx_hash: format_hex(&callview.transaction.hash),
-                        tx_value: value,
+                        tx_value: BigInt::from_unsigned_bytes_be(&value.bytes).to_string(),
                     })
                 } else {
                     None
@@ -50,12 +49,13 @@ fn map_deposits(block: eth::v2::Block) -> Result<Deposits, substreams::errors::E
         Ok(Deposits { deposits })
 }
 
-// #[substreams::handlers::store]
-// fn store_deposits(deposits: Deposits, store: StoreAddInt64) {
-//     for deposit in deposits.deposits {
-//         store.add(0, "total", deposit.tx_value as float);
-//     }
-// }
+#[substreams::handlers::store]
+fn store_deposits(deposits: Deposits, store: StoreAddBigInt) {
+    for deposit in deposits.deposits {
+        let value_as_string = deposit.tx_value;
+        let value_as_bigint: BigInt = value_as_string.parse().unwrap();
+            store.add(0, "total", value_as_bigint);
+}
 
 #[substreams::handlers::map]
 pub fn db_out(
