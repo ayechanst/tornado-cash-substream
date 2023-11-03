@@ -3,15 +3,12 @@ mod erc721;
 mod helpers;
 mod pb;
 
-// use substreams::key;
-use substreams::{scalar::BigInt, store::StoreAddBigInt};
 use pb::schema::{Deposit, Deposits};
 use substreams_ethereum::pb::eth;
-// use substreams::store::{StoreNew, StoreGetInt64, StoreGet};
 use helpers::*;
 
 // store related things
-// use substreams::{scalar::BigInt, store::{StoreAdd, StoreAddInt64}};
+use substreams::{scalar::BigInt, store::{StoreAddBigInt, StoreGetBigInt, StoreNew, StoreAdd}};
 
 // database related things
 use substreams_database_change::pb::database::DatabaseChanges;
@@ -55,28 +52,31 @@ fn store_deposits(deposits: Deposits, store: StoreAddBigInt) {
         let value_as_string = deposit.tx_value;
         let value_as_bigint: BigInt = value_as_string.parse().unwrap();
             store.add(0, "total", value_as_bigint);
+    }
 }
 
 #[substreams::handlers::map]
 pub fn db_out(
     deposits: Deposits,
-    // all_deposits: StoreGetInt64
+    all_deposits: StoreGetBigInt,
 ) -> Result<DatabaseChanges, substreams::errors::Error> {
     let mut tables = substreams_database_change::tables::Tables::new();
         for deposit in deposits.deposits {
             let key = format!("{}:{}", deposit.from, deposit.tx_hash);
+            let deposit_as_eth = wei_to_eth(deposit.tx_value.parse().unwrap());
             tables.create_row("deposits", key)
                 .set("from_address", deposit.from)
                 .set("to_address", deposit.to)
                 .set("tx_hash", deposit.tx_hash)
-                .set("tx_value", deposit.tx_value);
+                .set("tx_value", deposit_as_eth.to_string());
         }
 
-    // for all_deposits in all_deposits.into() {
-    //     tables.create_row("All Deposists", ADDRESS)
-    //         .set("all_deposits", all_deposits);
-    // }
-    // transfers_to_database_changes(&mut tables, &transfers);
+    for all_deposits in all_deposits.into() {
+        tables.create_row("All Deposists", ADDRESS)
+            .set("all_deposits", all_deposits);
+    }
+
+    transfers_to_database_changes(&mut tables, &transfers);
 
     Ok(tables.to_database_changes())
 }
