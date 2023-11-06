@@ -70,7 +70,6 @@ pub fn db_out(
                 .set("tx_hash", deposit.tx_hash)
                 .set("tx_value", deposit_as_eth.to_string());
         }
-
     for all_deposits in all_deposits.into() {
         tables.create_row("All Deposists", ADDRESS)
             .set("all_deposits", all_deposits);
