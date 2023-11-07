@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS deposits (
     from_address TEXT NOT NULL,
     to_address TEXT NOT NULL,
     tx_hash TEXT NOT NULL,
-    tx_value INT NOT NULL
+    tx_value TEXT NOT NULL
 );
 
 
