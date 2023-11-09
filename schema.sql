@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS deposits (
     tx_value TEXT NOT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS total_deposits (
-    total_value TEXT NOT NULL CONSTRAINT deposits_pk PRIMARY KEY,
+    total_value TEXT NOT NULL CONSTRAINT total_deposits_pk PRIMARY KEY
 );

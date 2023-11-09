@@ -73,14 +73,11 @@ pub fn db_out(
     }
 
     if let Some(value) = all_deposits.get_at(0, "total") {
-        let key = format!("{}:{}")
-            // fix this key and make it unique
-        tables.create_row("All Deposists", )
-            .set("total_value", value);
+        tables.create_row("total_deposits", ADDRESS)
+            .set("total_value", value.to_string());
     }
 
     // transfers_to_database_changes(&mut tables, &transfers);
-
 
     Ok(tables.to_database_changes())
 }
