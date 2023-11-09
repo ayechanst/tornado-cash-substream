@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS deposits (
 );
 
 CREATE TABLE IF NOT EXISTS total_deposits (
-    total_value TEXT NOT NULL CONSTRAINT total_deposits_pk PRIMARY KEY
+    total_value BIGINT NOT NULL CONSTRAINT total_deposits_pk PRIMARY KEY
 );
