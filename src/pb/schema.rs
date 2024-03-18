@@ -27,8 +27,10 @@ pub struct Deposit {
     #[prost(string, tag="2")]
     pub to: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
-    pub tx_hash: ::prost::alloc::string::String,
+    pub address: ::prost::alloc::string::String,
     #[prost(string, tag="4")]
+    pub tx_hash: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
     pub tx_value: ::prost::alloc::string::String,
 }
 // @@protoc_insertion_point(module)

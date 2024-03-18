@@ -18,6 +18,7 @@ message Deposits {
 message Deposit {
   string from = 1;
   string to = 2;
-  string tx_hash = 3;
-  string tx_value = 4;
+  string address = 3;
+  string tx_hash = 4;
+  string tx_value = 5;
 }
