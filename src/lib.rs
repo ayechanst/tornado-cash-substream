@@ -9,8 +9,8 @@ use substreams_ethereum::pb::eth::v2::Block;
 
 // store related things
 use substreams::{
-    scalar::BigInt,
-    store::{StoreAdd, StoreAddBigInt, StoreNew},
+    scalar::{BigDecimal, BigInt},
+    store::{StoreAdd, StoreAddBigInt, StoreGet, StoreGetBigInt, StoreNew},
 };
 
 // database related things
@@ -71,14 +71,17 @@ fn store_deposits(deposits: Deposits, store: StoreAddBigInt) {
 #[substreams::handlers::map]
 fn graph_out(
     deposits: Deposits,
-    store: StoreAddBigInt,
+    store: StoreGetBigInt,
 ) -> Result<EntityChanges, substreams::errors::Error> {
     let mut tables = Tables::new();
     for deposit in deposits.deposits.into_iter() {
+        let address_ref = &deposit.address;
+        let wei_total = store.get_at(0, address_ref).unwrap();
+        let eth_total = wei_to_eth(wei_total);
+
         tables
-            .create_row("Pool", deposit.address)
-            .set("total", store.deposit.address)
-            .set("tx_value", deposit.tx_value);
+            .update_row("Pool", address_ref)
+            .set("total", eth_total);
     }
     Ok(tables.to_entity_changes())
 }

@@ -6,3 +6,9 @@ type Deposit @entity {
   tx_hash: String
   tx_value: String
 }
+
+type Pool @entity {
+  id: ID!
+  total: BigDecimal
+  # deposits: [Deposit!] @derivedFrom(field: "deposit")
+}

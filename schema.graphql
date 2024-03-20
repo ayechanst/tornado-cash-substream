@@ -9,6 +9,6 @@ type Deposit @entity {
 
 type Pool @entity {
   id: ID!
-  pool_name: String
-  deposit: Deposit
+  total: BigDecimal
+  # deposits: [Deposit!] @derivedFrom(field: "deposit")
 }

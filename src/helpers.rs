@@ -1,41 +1,21 @@
 use std::collections::HashMap;
-
-// use crate::{
-//     pb::schema::{Approvals, Transfers},
-//     pb::schema::Transfers,
-//     ADDRESS,
-// };
-//
+use substreams::scalar::BigDecimal;
 use substreams::{scalar::BigInt, Hex};
-// use substreams_entity_change::tables::Tables;
 
-// pub fn transfers_to_table_changes(tables: &mut Tables, transfers: &Transfers) {
-//     for transfer in transfers.transfers.iter() {
-//         // handle the transfer
-//         let key = format!("{}-{}", transfer.tx_hash, transfer.token_id);
-//         let row = tables.update_row("Transfer", key);
-//         row.set("from", &transfer.from);
-//         row.set("to", &transfer.to);
-//         row.set("tokenId", &transfer.token_id);
-
-//         // handle the accounts
-//         tables.create_row("Account", &transfer.from);
-//         tables.create_row("Account", &transfer.to);
-
-//         // handle updating the token owner
-//         tables
-//             .update_row("Token", format!("{}", &transfer.token_id))
-//             .set("collection", ADDRESS.to_string())
-//             .set("owner", &transfer.to);
-//     }
-// }
 pub const TC01: &str = "0x12D66f87A04A9E220743712cE6d9bB1B5616B8Fc";
 pub const TC1: &str = "0x47CE0C6eD5B0Ce3d3A51fdb1C52DC66a7c3c2936";
 pub const TC10: &str = "0x910Cbd523D972eb0a6f4cAe4618aD62622b39DbF";
 pub const TC100: &str = "0xA160cdAB225685dA1d56aa342Ad8841c3b53f291";
 
-pub fn wei_to_eth(wei: BigInt) -> f32 {
-    ((wei.to_u64()) / 1000000000000000000) as f32
+// pub fn wei_to_eth(wei: BigInt) -> f64 {
+//     ((wei.to_u64()) / 1000000000000000000) as f64
+// }
+
+pub fn wei_to_eth(wei: BigInt) -> BigDecimal {
+    // Convert wei to BigDecimal before division
+    let wei_big_decimal = BigDecimal::from(wei);
+    let eth_big_decimal = wei_big_decimal / (1000000000000000000 as u64);
+    eth_big_decimal
 }
 
 pub fn format_hex(address: &[u8]) -> String {
