@@ -9,12 +9,12 @@ use substreams_ethereum::pb::eth::v2::Block;
 
 // store related things
 use substreams::{
-    log,
     scalar::BigInt,
-    store::{StoreAdd, StoreAddBigInt, StoreGet, StoreGetBigInt, StoreNew},
+    store::{StoreAdd, StoreAddBigInt, StoreNew},
 };
 
 // database related things
+use substreams_entity_change::{pb::entity::EntityChanges, tables::Tables};
 
 pub const ADDRESS: &str = "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b";
 pub const TC01: &str = "0x12D66f87A04A9E220743712cE6d9bB1B5616B8Fc";
@@ -63,12 +63,24 @@ fn map_deposits(blk: Block) -> Result<Deposits, substreams::errors::Error> {
 fn store_deposits(deposits: Deposits, store: StoreAddBigInt) {
     for deposit in deposits.deposits {
         let value_as_string = deposit.tx_value;
-        substreams::log::info!("value as string {}", value_as_string);
         let value_as_bigint: BigInt = value_as_string.parse().unwrap();
-        substreams::log::info!("value as bigint {}", value_as_bigint);
-        store.add(0, "total", value_as_bigint);
+        store.add(0, deposit.address, value_as_bigint);
     }
 }
 
-// #[substreams::handlers::map]
-// fn graph_out(deposits: Deposits) -> Result<EntityChanges, substreams::errors::Error> {}
+#[substreams::handlers::map]
+fn graph_out(
+    deposits: Deposits,
+    store: StoreAddBigInt,
+) -> Result<EntityChanges, substreams::errors::Error> {
+    let mut tables = Tables::new();
+    for deposit in deposits.deposits.into_iter() {
+        tables
+            .create_row("Pool", deposit.address)
+            .set("total", store.deposit.address)
+            .set("tx_value", deposit.tx_value);
+    }
+    Ok(tables.to_entity_changes())
+}
+
+// substreams::log::info!("value as string {}", value_as_string);

@@ -2,15 +2,6 @@ syntax = "proto3";
 
 package schema;
 
-message Contracts {
-  repeated Contract contracts = 1;
-}
-
-message Contract {
-    string address = 1;
-    string timestamp = 2;
-}
-
 message Deposits {
   repeated Deposit deposits = 1;
 }

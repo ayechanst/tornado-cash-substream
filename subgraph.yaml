@@ -10,7 +10,7 @@ dataSources:
     source:
       package:
         moduleName: graph_out
-        file: substream.spkg
+        file: tornado-cash-v1.0.1.spkg
     mapping:
       kind: substreams/graph-entities
       apiVersion: 0.0.5
